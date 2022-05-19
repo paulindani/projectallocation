@@ -1,0 +1,92 @@
+<!-- This Rmd file creates a PDF including tables with the allocation listing the students in each project. It also saves the list of students for each project in a separate csv file. -->
+---
+title: "Project Assignments 2021/22"
+date: "28/04/2022"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(janitor)
+library(readxl)
+library(kableExtra)
+
+opts_chunk$set(echo = FALSE, message = FALSE)
+load("allocation.Rdata")
+student.info=read.csv("project_choices_deduplicated.csv")
+#This file is the list of students
+#The Email and Name attributes contain the emails and names of students
+```
+
+# Session 1
+
+```{r, printtable1, results = 'asis'}
+projects=list("Name of Session 1 Project 1", "Name of Session 1 Project 2", "Name of Session 1 Project 3", "Name of Session 1 Project 4")
+
+file.names=list("students_in_session1_project1.csv","students_in_session1_project2.csv","students_in_session1_project3.csv","students_in_session1_project4.csv")
+
+for(i in 1:4)
+{
+  
+#cat(paste("#",as.character(i),"– "))
+cat('## ',as.character(i),'. ',sep="")
+cat(projects[[i]],'\n')
+
+students.in.project.i=which(assignment.project1==i)
+df=data.frame(No.=1:length(students.in.project.i),Student.ID=substr(student.info$Email,1,8)[students.in.project.i],Name=student.info$Name[students.in.project.i])
+
+cat("\n")
+print(kable_styling(kable(df,format="latex"),latex_options="hold_position"))
+cat("\n")
+
+#saving students for each project into a csv file
+write.csv(df, file.names[[i]],row.names = F)
+
+
+#if(i<=4){
+  print(unname(as.data.frame("\newpage")),quote = FALSE, row.names = FALSE)
+  cat('\n')
+#}
+  
+}
+```
+
+# Session 2
+
+```{r, printtable2, results = 'asis'}
+projects=list("Identifying Packaging: Recognizing Packaging Components in Consumer Goods", "Filling the gaps: Using synthetic aperture radar data to reconstruct multispectral images", "Identifying risk factors for leptospirosis infection in a Kenyan pastoral landscape", "How accurately can we predict someone's age from a DNA sample?")
+
+file.names=list("Session_2_Identifying_Packaging.csv","Session_2_Filling_The_Gaps.csv","Session_2_Leptospirosis.csv","Session_2_Age_From_DNA.csv")
+
+for(i in 1:4)
+{
+  
+#cat(paste("#",as.character(i),"– "))
+cat('## ',as.character(i),'. ',sep="")
+cat(projects[[i]],'\n')
+
+students.in.project.i=which(assignment.project2==i)
+#df=data.frame(No.=1:length(students.in.project.i),Student.ID=substr(student.info$Email,1,8)[students.in.project.i],Name=student.info$Name[students.in.project.i])
+df=data.frame(No.=1:length(students.in.project.i),Email=student.info$Email[students.in.project.i],Name=student.info$Name[students.in.project.i])
+
+cat("\n")
+print(kable_styling(kable(df,format="latex"),latex_options="hold_position"))
+cat("\n")
+
+#saving students for each project into a csv file
+write.csv(df, file.names[[i]],row.names = F)
+
+if(i<4){
+  print(unname(as.data.frame("\newpage")),quote = FALSE, row.names = FALSE)
+  cat('\n')
+}
+  
+}
+```
+
+
+
